@@ -36,9 +36,14 @@ namespace ShopApp.Business.Concrete
             return _productRepository.GetById(id);
         }
 
-        public List<Product> GetPopulerProducts()
+        public Product GetProductDetails(int id)
         {
-            return _productRepository.GetAll(p=>p.Price > 2000).ToList();
+            return _productRepository.GetProductDetails(id);
+        }
+
+        public List<Product> GetProductsByCategory(string category)
+        {
+            return _productRepository.GetProductsByCategory(category);
         }
 
         public void Update(Product entity)

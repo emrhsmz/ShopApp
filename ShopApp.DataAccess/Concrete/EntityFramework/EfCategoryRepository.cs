@@ -9,7 +9,7 @@ using System.Text;
 
 namespace ShopApp.DataAccess.Concrete.EntityFramework
 {
-    class EfCategoryRepository : EfGenericRepository<Category, ShopContext>, ICategoryRepository
+    public class EfCategoryRepository : EfGenericRepository<Category, ShopContext>, ICategoryRepository
     {
 
     }

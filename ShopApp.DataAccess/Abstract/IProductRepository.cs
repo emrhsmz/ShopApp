@@ -9,6 +9,7 @@ namespace ShopApp.DataAccess.Abstract
 {
     public interface IProductRepository : IBaseRepository<Product>
     {
-        IEnumerable<Product> GetPopularProducts();   
+        List<Product> GetProductsByCategory(string category);
+        Product GetProductDetails(int id);
     }
 }
