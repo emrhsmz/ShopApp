@@ -1,0 +1,47 @@
+﻿@model ProductListModel
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Admin Products</h1>
+<hr />
+
+@if (Model.Products.Count > 0)
+	{
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <td class="w30">Id</td>
+            <td class="w100">Image</td>
+            <td>Name</td>
+            <td class="w12">Price</td>
+            <td class="w140"></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Products)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>
+                    <img src="~/img/@item.ImageURL" width="80" />
+                </td>
+                <td>@item.Name</td>
+                <td>@item.Price</td>
+                <td>
+                    <a class="btn btn-primary btn-sm mr-2" href="/admin/products/@item.Id">Edit</a>
+                    <a class="btn btn-danger btn-sm" href="/admin/products/@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+else
+{
+    <div class="alert alert-warning">
+        <h4>No Products</h4>
+    </div>
+}
+
+

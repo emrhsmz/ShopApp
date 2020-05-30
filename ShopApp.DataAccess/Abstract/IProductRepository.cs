@@ -9,7 +9,8 @@ namespace ShopApp.DataAccess.Abstract
 {
     public interface IProductRepository : IBaseRepository<Product>
     {
-        List<Product> GetProductsByCategory(string category);
+        List<Product> GetProductsByCategory(string category, int page, int pageSize);
         Product GetProductDetails(int id);
+        int GetCountByCategory(string category);
     }
 }
