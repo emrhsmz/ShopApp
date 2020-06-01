@@ -12,13 +12,16 @@ namespace ShopApp.WebUI.Controllers
     public class AdminController : Controller
     {
         private IProductService _productService;
-        public AdminController(IProductService productService)
+        private ICategoryService _categoryService;
+        public AdminController(IProductService productService, ICategoryService categoryService)
         {
             _productService = productService;
+            _categoryService = categoryService;
         }
-        public IActionResult Index()
+        public IActionResult ProductList()
         {
-            return View(new ProductListModel() { 
+            return View(new ProductListModel()
+            {
                 Products = _productService.GetAll()
             });
         }
@@ -41,12 +44,12 @@ namespace ShopApp.WebUI.Controllers
 
             _productService.Create(entity);
 
-            return Redirect("Index");
+            return RedirectToAction("Index");
         }
 
-        public IActionResult Edit(int? id)
+        public IActionResult EditProduct(int? id)
         {
-            if (id==null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -67,7 +70,7 @@ namespace ShopApp.WebUI.Controllers
             return View(model);
         }
         [HttpPost]
-        public IActionResult Edit(ProductModel model)
+        public IActionResult EditProduct(ProductModel model)
         {
             var entity = _productService.GetById(model.Id);
 
@@ -83,7 +86,54 @@ namespace ShopApp.WebUI.Controllers
 
             _productService.Update(entity);
 
-            return Redirect("Index");
+            return RedirectToAction("Index");
+        }
+        [HttpPost]
+        public IActionResult DeleteProduct(int Id)
+        {
+            var entity = _productService.GetById(Id);
+            if (entity != null)
+            {
+                _productService.Delete(entity);
+            }
+            return RedirectToAction("Index");
+        }
+
+
+
+        public IActionResult CategoryList()
+        {
+            return View(new CategoryListModel()
+            {
+                Categories = _categoryService.GetAll()
+            });
+        }
+        public IActionResult CreateCategory()
+        {
+            return View(new CategoryListModel()
+            {
+                Categories = _categoryService.GetAll()
+            });
+        }
+        [HttpPost]
+        public IActionResult CreateCategory( CategoryModel model)
+        {
+            return View(new CategoryListModel()
+            {
+                Categories = _categoryService.GetAll()
+            });
+        }
+        public IActionResult EditCategory()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult EditCategory(int Id)
+        {
+            return View(new CategoryListModel()
+            {
+                Categories = _categoryService.GetAll()
+            });
         }
     }
 }
