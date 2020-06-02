@@ -9,6 +9,7 @@ namespace ShopApp.DataAccess.Abstract
 {
     public interface ICategoryRepository : IBaseRepository<Category>
     {
-        
+        Category GetByIdWithProducts(int id);
+        void DeleteFromCategory(int id, int categoryId);
     }
 }

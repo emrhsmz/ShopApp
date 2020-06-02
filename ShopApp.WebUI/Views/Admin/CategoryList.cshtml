@@ -23,7 +23,7 @@
                     <td>@item.Id</td>
                     <td>@item.Name</td>
                     <td>
-                        <a class="btn btn-primary btn-sm mr-2" href="/admin/category/@item.Id">Edit</a>
+                        <a class="btn btn-primary btn-sm mr-2" href="/admin/editcategory/@item.Id">Edit</a>
                         <form action="/admin/deletecategory" method="post" style="display:inline;">
                             <input type="hidden" name="Id" value="@item.Id" />
                             <button type="submit" class="btn btn-danger btn-sm">Delete</button>

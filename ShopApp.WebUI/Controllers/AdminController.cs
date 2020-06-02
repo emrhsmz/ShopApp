@@ -28,23 +28,27 @@ namespace ShopApp.WebUI.Controllers
 
         public IActionResult CreateProduct()
         {
-            return View();
+            return View(new ProductModel());
         }
 
         [HttpPost]
         public IActionResult CreateProduct(ProductModel model)
         {
-            var entity = new Product()
+            if (ModelState.IsValid == true)
             {
-                Name = model.Name,
-                Price = model.Price,
-                Description = model.Description,
-                ImageURL = model.ImageURL
-            };
+                var entity = new Product()
+                {
+                    Name = model.Name,
+                    Price = model.Price,
+                    Description = model.Description,
+                    ImageURL = model.ImageURL
+                };
 
-            _productService.Create(entity);
+                _productService.Create(entity);
 
-            return RedirectToAction("Index");
+                return RedirectToAction("ProductList");
+            }
+            return View(model);
         }
 
         public IActionResult EditProduct(int? id)
@@ -53,7 +57,7 @@ namespace ShopApp.WebUI.Controllers
             {
                 return NotFound();
             }
-            var entity = _productService.GetById((int)id);
+            var entity = _productService.GetByIdWithCategories((int)id);
             if (entity == null)
             {
                 return NotFound();
@@ -64,13 +68,14 @@ namespace ShopApp.WebUI.Controllers
                 Name = entity.Name,
                 Price = entity.Price,
                 Description = entity.Description,
-                ImageURL = entity.ImageURL
+                ImageURL = entity.ImageURL,
+                SelectedCategories = entity.ProductCategories.Select(i => i.Category).ToList()
             };
-
+            ViewBag.Categories = _categoryService.GetAll();
             return View(model);
         }
         [HttpPost]
-        public IActionResult EditProduct(ProductModel model)
+        public IActionResult EditProduct(ProductModel model, int[] categoryIds)
         {
             var entity = _productService.GetById(model.Id);
 
@@ -84,9 +89,9 @@ namespace ShopApp.WebUI.Controllers
             entity.ImageURL = model.ImageURL;
             entity.Price = model.Price;
 
-            _productService.Update(entity);
+            _productService.Update(entity,categoryIds);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("ProductList");
         }
         [HttpPost]
         public IActionResult DeleteProduct(int Id)
@@ -96,7 +101,7 @@ namespace ShopApp.WebUI.Controllers
             {
                 _productService.Delete(entity);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("ProductList");
         }
 
 
@@ -122,18 +127,45 @@ namespace ShopApp.WebUI.Controllers
             _categoryService.Create(entity);
             return RedirectToAction("CategoryList");
         }
-        public IActionResult EditCategory()
+        public IActionResult EditCategory(int id)
         {
-            var entity = _categoryService
-            return View();
+            var entity = _categoryService.GetByIdWithProducts(id);
+
+            return View(new CategoryModel() { 
+                Id = entity.Id,
+                Name = entity.Name,
+                Products = entity.ProductCategories.Select( p => p.Product).ToList()
+            });
         }
         [HttpPost]
-        public IActionResult EditCategory(int Id)
+        public IActionResult EditCategory(CategoryModel model)
         {
-            return View(new CategoryListModel()
+            var entity = _categoryService.GetById(model.Id);
+            if (entity == null)
             {
-                Categories = _categoryService.GetAll()
-            });
+                return NotFound();
+            }
+            entity.Name = model.Name;
+            _categoryService.Update(entity);
+
+            return RedirectToAction("CategoryList");
+        }
+
+        [HttpPost]
+        public IActionResult DeleteCategory(int Id)
+        {
+            var entity = _categoryService.GetById(Id);
+            if (entity != null)
+            {
+                _categoryService.Delete(entity);
+            }
+            return RedirectToAction("CategoryList");
+        }
+        [HttpPost]
+        public IActionResult DeleteFromCategory(int Id, int categoryId)
+        {
+            _categoryService.DeleteFromCategory(Id, categoryId);
+            return Redirect("/admin/editcategory/" + categoryId);
         }
     }
 }

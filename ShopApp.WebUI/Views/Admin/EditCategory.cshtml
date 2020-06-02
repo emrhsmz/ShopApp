@@ -6,8 +6,8 @@
 <h1>EditCategory</h1>
 <hr />
 <div class="row">
-    <div class="col-md-8">
-        <form asp-controller="Admin" asp-action="EditProduct" method="post">
+    <div class="col-md-4">
+        <form asp-controller="Admin" asp-action="EditCategory" method="post">
             <input type="hidden" name="Id" value="@Model.Id" />
             <div class="form-group row">
                 <label class="col-md-2 col-form-label" asp-for="Name">Name</label>
@@ -21,6 +21,53 @@
                 </div>
             </div>
         </form>
+    </div>
+    <div class="col-md-8">
+
+        @if (Model.Products.Count > 0)
+        {
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <td class="w30">Id</td>
+                        <td class="w100">Image</td>
+                        <td>Name</td>
+                        <td class="w12">Price</td>
+                        <td class="w140"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Products)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>
+                                <img src="~/img/@item.ImageURL" width="80" />
+                            </td>
+                            <td>@item.Name</td>
+                            <td>@item.Price</td>
+                            <td>
+                                <a class="btn btn-primary btn-sm mr-2" href="/admin/products/@item.Id">Edit</a>
+                                <form action="/admin/deletefromcategory" method="post" style="display:inline;">
+                                    <input type="hidden" name="Id" value="@item.Id" />
+                                    <input type="hidden" name="categoryId" value="@Model.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                <h4>No Products</h4>
+            </div>
+        }
+
+
+
     </div>
 </div>
 

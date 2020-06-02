@@ -38,6 +38,11 @@ namespace ShopApp.DataAccess.Concrete.Memory
             throw new NotImplementedException();
         }
 
+        public Product GetByIdWithCategories(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public int GetCountByCategory(string category)
         {
             throw new NotImplementedException();
@@ -59,6 +64,11 @@ namespace ShopApp.DataAccess.Concrete.Memory
         }
 
         public void Update(Product entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Product entity, int[] categoryIds)
         {
             throw new NotImplementedException();
         }
