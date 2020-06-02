@@ -110,21 +110,21 @@ namespace ShopApp.WebUI.Controllers
         }
         public IActionResult CreateCategory()
         {
-            return View(new CategoryListModel()
-            {
-                Categories = _categoryService.GetAll()
-            });
+            return View();
         }
         [HttpPost]
         public IActionResult CreateCategory( CategoryModel model)
         {
-            return View(new CategoryListModel()
+            var entity = new Category()
             {
-                Categories = _categoryService.GetAll()
-            });
+                Name = model.Name
+            };
+            _categoryService.Create(entity);
+            return RedirectToAction("CategoryList");
         }
         public IActionResult EditCategory()
         {
+            var entity = _categoryService
             return View();
         }
         [HttpPost]

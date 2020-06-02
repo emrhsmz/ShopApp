@@ -33,7 +33,7 @@ namespace ShopApp.Business.Concrete
 
         public Category GetById(int id)
         {
-            throw new NotImplementedException();
+            return _categoryRepository.GetById(id);
         }
 
         public void Update(Category entity)
