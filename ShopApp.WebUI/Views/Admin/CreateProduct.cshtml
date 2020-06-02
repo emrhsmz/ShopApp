@@ -6,6 +6,10 @@
 
     <script src="~/modules/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/modules/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace("editor");
+    </script>
 }
 
 <h1>Create Product</h1>
@@ -13,6 +17,12 @@
 <hr />
 <div class="row">
     <div class="col-md-8">
+        @if (ViewBag.ErrorMessage != null)
+        {
+            <div class="text-danger">
+                @ViewBag.ErrorMessage
+            </div>
+        }
         <form asp-controller="Admin" asp-action="CreateProduct" method="post">
             <div class="text-danger" asp-validation-summary="All"></div>
             <div class="form-group row">

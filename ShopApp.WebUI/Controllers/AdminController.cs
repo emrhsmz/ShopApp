@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopApp.Business.Abstract;
 using ShopApp.Entities.Concrete;
@@ -44,9 +46,12 @@ namespace ShopApp.WebUI.Controllers
                     ImageURL = model.ImageURL
                 };
 
-                _productService.Create(entity);
-
-                return RedirectToAction("ProductList");
+                if (_productService.Create(entity))
+                {
+                    return RedirectToAction("ProductList");
+                }
+                ViewBag.ErrorMessage = _productService.ErrorMessage;
+                return View(model);
             }
             return View(model);
         }
@@ -75,23 +80,35 @@ namespace ShopApp.WebUI.Controllers
             return View(model);
         }
         [HttpPost]
-        public IActionResult EditProduct(ProductModel model, int[] categoryIds)
+        public async Task<IActionResult> EditProduct(ProductModel model, int[] categoryIds, IFormFile file)
         {
-            var entity = _productService.GetById(model.Id);
-
-            if (entity == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var entity = _productService.GetById(model.Id);
+
+                if (entity == null)
+                {
+                    return NotFound();
+                }
+
+                entity.Name = model.Name;
+                entity.Description = model.Description;
+                entity.Price = model.Price;
+
+                if (file != null)
+                {
+                    entity.ImageURL = file.Name;
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img", file.Name);
+                    using (var stream = new FileStream(path, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+                }
+                _productService.Update(entity, categoryIds);
+                return RedirectToAction("ProductList");
             }
-
-            entity.Name = model.Name;
-            entity.Description = model.Description;
-            entity.ImageURL = model.ImageURL;
-            entity.Price = model.Price;
-
-            _productService.Update(entity,categoryIds);
-
-            return RedirectToAction("ProductList");
+            ViewBag.Categories = _categoryService.GetAll();
+            return View(model);
         }
         [HttpPost]
         public IActionResult DeleteProduct(int Id)

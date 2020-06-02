@@ -1,11 +1,22 @@
 ﻿@model ProductModel
 @{
     ViewData["Title"] = "EditProduct";
+    var counter = 0;
+}
+@section Scripts{
+
+    <script src="~/modules/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/modules/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/modules/ckeditor/ckeditor.js"></script>
+    <script>
+        CKEDITOR.replace("editor");
+    </script>
 }
 
 <h1>Edit Product</h1>
 <hr />
-<form asp-controller="Admin" asp-action="EditProduct" method="post">
+<form asp-controller="Admin" asp-action="EditProduct" method="post" enctype="multipart/form-data">
+    <div class="text-danger" asp-validation-summary="All"></div>
     <div class="row">
         <div class="col-md-8">
             <input type="hidden" name="Id" value="@Model.Id" />
@@ -18,7 +29,9 @@
             <div class="form-group row">
                 <label class="col-md-2 col-form-label" asp-for="ImageURL">ImageURL</label>
                 <div class="col-md-10">
-                    <input class="form-control" asp-for="ImageURL" id="ImageURL" value="@Model.ImageURL" />
+                    <input type="hidden" name="ImageURL" value="@Model.ImageURL" />
+                    <img src="~/img/@Model.ImageURL" alt="@Model.Name" width="80" />
+                    <input type="file" name="file" value="" />
                 </div>
             </div>
             <div class="form-group row">
@@ -42,8 +55,21 @@
         <div class="col-md-4">
             @foreach (var item in (List<Category>)ViewBag.Categories)
             {
+                var isChecked = "";
+                if (Model.SelectedCategories.Any(i => i.Id == item.Id))
+                {
+                    isChecked = "checked";
+                    <input type="hidden" name="SelectedCategories[@counter].Id" value="@item.Id" />
+                    <input type="hidden" name="SelectedCategories[@counter].Name" value="@item.Id" />
+                    counter++;
+                }
+                else
+                {
+                    isChecked = "";
+                }
+
                 <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="categoryIds" value="@item.Id" id="category@(item.Id)" @(Model.SelectedCategories.Any(i=>i.Id == item.Id)? "checked" : "") />
+                    <input type="checkbox" class="custom-control-input" name="categoryIds" value="@item.Id" id="category@(item.Id)" @isChecked />
                     <label class="custom-control-label" for="category@(item.Id)">@item.Name</label>
                 </div>
             }
