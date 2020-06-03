@@ -56,7 +56,7 @@ namespace ShopApp.DataAccess.Concrete.EntityFramework
             }
         }
 
-        public void Update(T entity)
+        public virtual void Update(T entity)
         {
             using (var context = new TContext())
             {

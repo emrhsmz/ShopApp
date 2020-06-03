@@ -76,8 +76,11 @@ namespace ShopApp.WebUI
 
             services.AddScoped<IProductRepository, EfProductRepository>();
             services.AddScoped<ICategoryRepository, EfCategoryRepository>();
+            services.AddScoped<ICartRepository, EfCartRepository>();
+
             services.AddScoped<IProductService, ProductManager>();
             services.AddScoped<ICategoryService, CategoryManager>();
+            services.AddScoped<ICartService, CartManager>();
 
             services.AddTransient<IEmailSender, EmailSender>();
 
@@ -118,6 +121,11 @@ namespace ShopApp.WebUI
                    template: "admin/products/{id?}",
                    defaults: new { controller = "Admin", action = "EditProduct" }
                    );
+                routes.MapRoute(
+                    name: "cart",
+                    template: "cart",
+                    defaults: new { controller = "Cart", action = "Index" }
+                    );
                 routes.MapRoute(
                     name: "products",
                     template:"products/{category?}",
