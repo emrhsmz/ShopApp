@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShopApp.Business.Abstract;
@@ -11,6 +12,7 @@ using ShopApp.WebUI.Models;
 
 namespace ShopApp.WebUI.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private IProductService _productService;
@@ -97,17 +99,22 @@ namespace ShopApp.WebUI.Controllers
 
                 if (file != null)
                 {
-                    entity.ImageURL = file.Name;
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img", file.Name);
+                    entity.ImageURL = file.FileName;
+
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\img", file.FileName);
                     using (var stream = new FileStream(path, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
                     }
                 }
+
                 _productService.Update(entity, categoryIds);
+
                 return RedirectToAction("ProductList");
             }
+
             ViewBag.Categories = _categoryService.GetAll();
+
             return View(model);
         }
         [HttpPost]
@@ -135,7 +142,7 @@ namespace ShopApp.WebUI.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult CreateCategory( CategoryModel model)
+        public IActionResult CreateCategory(CategoryModel model)
         {
             var entity = new Category()
             {
@@ -148,10 +155,11 @@ namespace ShopApp.WebUI.Controllers
         {
             var entity = _categoryService.GetByIdWithProducts(id);
 
-            return View(new CategoryModel() { 
+            return View(new CategoryModel()
+            {
                 Id = entity.Id,
                 Name = entity.Name,
-                Products = entity.ProductCategories.Select( p => p.Product).ToList()
+                Products = entity.ProductCategories.Select(p => p.Product).ToList()
             });
         }
         [HttpPost]
