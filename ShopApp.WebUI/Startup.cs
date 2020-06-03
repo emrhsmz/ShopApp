@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,7 @@ using ShopApp.DataAccess.Abstract;
 using ShopApp.DataAccess.Concrete.EntityFramework;
 using ShopApp.DataAccess.Concrete.EntityFramework.Seed;
 using ShopApp.DataAccess.Concrete.Memory;
+using ShopApp.WebUI.EmailServices;
 using ShopApp.WebUI.Identity;
 using ShopApp.WebUI.Middlewares;
 
@@ -53,7 +55,7 @@ namespace ShopApp.WebUI
 
                 options.User.AllowedUserNameCharacters = ""; // Kullanıcı adında geçerli olan karakterleri belirtiyoruz.
                 options.User.RequireUniqueEmail = false; // aynı mail adresi ile üyelikoluşmaz
-                options.SignIn.RequireConfirmedEmail = false; // mail adresine onay gidecek
+                options.SignIn.RequireConfirmedEmail = true; // mail adresine onay gidecek
                 options.SignIn.RequireConfirmedPhoneNumber = false; // telefonla onaylamak için
             });
 
@@ -67,7 +69,8 @@ namespace ShopApp.WebUI
                 options.Cookie = new CookieBuilder
                 {
                     HttpOnly = true,
-                    Name = ".ShopApp.Security.Cookie"
+                    Name = ".ShopApp.Security.Cookie",
+                    SameSite = SameSiteMode.Strict // CROSS ATAKLARINI ENGELLER - başka kullanıcı cookie alıp servere gönderemez
                 };
             });
 
@@ -75,11 +78,24 @@ namespace ShopApp.WebUI
             services.AddScoped<ICategoryRepository, EfCategoryRepository>();
             services.AddScoped<IProductService, ProductManager>();
             services.AddScoped<ICategoryService, CategoryManager>();
+
+            services.AddTransient<IEmailSender, EmailSender>();
+
+            //services.AddTransient<IEmailSender, EmailSender>(i =>
+            //    new EmailSender(
+            //        Configuration["EmailSender:Host"],
+            //        Configuration.GetValue<int>("EmailSender:Port"),
+            //        Configuration.GetValue<bool>("EmailSender:EnableSSL"),
+            //        Configuration["EmailSender:UserName"],
+            //        Configuration["EmailSender:Password"]
+            //    )
+            //);
+
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -112,6 +128,8 @@ namespace ShopApp.WebUI
                     template: "{controller=Home}/{action=Index}/{id?}"
                     );
             });
+
+            SeedIdentity.Seed(userManager, roleManager, Configuration).Wait();
         }
     }
 }
