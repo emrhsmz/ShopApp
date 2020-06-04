@@ -41,5 +41,13 @@ namespace ShopApp.DataAccess.Concrete.EntityFramework
             }
         }
 
+        public void ClearCart(string cartId)
+        {
+            using (var context = new ShopContext())
+            {
+                var cmd = @"DELETE FROM CartItem WHERE CartID=@p0";
+                context.Database.ExecuteSqlCommand(cmd, cartId);
+            }
+        }
     }
 }

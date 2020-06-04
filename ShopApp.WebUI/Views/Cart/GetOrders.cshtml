@@ -1,0 +1,80 @@
+﻿@model List<OrderListModel>
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h1>Orders</h1>
+
+<div class="row mt-5">
+    <div class="col-md-12">
+        <div class="text-left">
+            <h4>Total @Model.Count().ToString() Order</h4>
+        </div>
+        @if (Model.Count() > 0)
+        {
+            @foreach (var item in Model)
+            {
+                <table class="table table-hover table-bordered table-sm mb-3">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <td colspan="2">Order Id #@item.OrderId</td>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var orderItem in item.OrderItems)
+                        {
+                            <tr>
+                                <td style="width:60px;">
+                                    <img src="~/img/@orderItem.ImageURL" width="50" />
+                                </td>
+                                <td>@orderItem.Name</td>
+                                <td>@orderItem.Price</td>
+                                <td>@orderItem.Quantity</td>
+                                <td>@((orderItem.Quantity * orderItem.Price).ToString("c"))</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2">Customer Name : </td>
+                            <td>@item.FirstName @item.LastName</td>
+                            <td>@item.TotalQuantity()</td>
+                            <td><b>Total : @item.TotalPrice()</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Adress : </td>
+                            <td>@item.Adress</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Phone : </td>
+                            <td>@item.Phone</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Email : </td>
+                            <td>@item.Email</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Payment Status : </td>
+                            <td>@item.PaymentTypes</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">Order Status : </td>
+                            <td>@item.OrderState</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            }
+        }
+        else
+        {
+            <div class="alert alert-warning">
+                No Products in Cart!
+            </div>
+        }
+
+    </div>
+</div>

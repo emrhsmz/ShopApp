@@ -60,7 +60,7 @@ namespace ShopApp.WebUI.Controllers
                     token = code
                 });
 
-                await _emailSender.SendEmailAsync(model.Email, "Hesabınızı Onaylayın", $"Lütfen email hesabınızı onaylamak için linke <a href='http://localhost:50712{callbackUrl}'>tıklayınız</a>");
+                await _emailSender.SendEmailAsync(model.Email,"Hesabınızı Onaylayın", $"Lütfen email hesabınızı onaylamak için linke <a href='http://localhost:50712{callbackUrl}'>tıklayınız</a>");
 
                 TempData.Put("message", new ResultMessage {
                     Title = "Hesap Onayı",
@@ -71,7 +71,7 @@ namespace ShopApp.WebUI.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-            ModelState.AddModelError("", "Bilinmeyen hata oluştu lütfen tekrar deneyiniz.",);
+            ModelState.AddModelError("", "Bilinmeyen hata oluştu lütfen tekrar deneyiniz.");
             return View(model);
         }
 

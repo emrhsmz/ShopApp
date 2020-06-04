@@ -54,7 +54,7 @@ namespace ShopApp.WebUI
                 options.Lockout.AllowedForNewUsers = true; // yeni kullanıcı için kilit işlemi aktif olsun
 
                 options.User.AllowedUserNameCharacters = ""; // Kullanıcı adında geçerli olan karakterleri belirtiyoruz.
-                options.User.RequireUniqueEmail = false; // aynı mail adresi ile üyelikoluşmaz
+                options.User.RequireUniqueEmail = true; // aynı mail adresi ile üyelikoluşmaz
                 options.SignIn.RequireConfirmedEmail = true; // mail adresine onay gidecek
                 options.SignIn.RequireConfirmedPhoneNumber = false; // telefonla onaylamak için
             });
@@ -77,22 +77,24 @@ namespace ShopApp.WebUI
             services.AddScoped<IProductRepository, EfProductRepository>();
             services.AddScoped<ICategoryRepository, EfCategoryRepository>();
             services.AddScoped<ICartRepository, EfCartRepository>();
+            services.AddScoped<IOrderRepository, EfOrderRepository>();
 
             services.AddScoped<IProductService, ProductManager>();
             services.AddScoped<ICategoryService, CategoryManager>();
             services.AddScoped<ICartService, CartManager>();
+            services.AddScoped<IOrderService, OrderManager>();
 
-            services.AddTransient<IEmailSender, EmailSender>();
+            //services.AddTransient<IEmailSender, EmailSender>();
 
-            //services.AddTransient<IEmailSender, EmailSender>(i =>
-            //    new EmailSender(
-            //        Configuration["EmailSender:Host"],
-            //        Configuration.GetValue<int>("EmailSender:Port"),
-            //        Configuration.GetValue<bool>("EmailSender:EnableSSL"),
-            //        Configuration["EmailSender:UserName"],
-            //        Configuration["EmailSender:Password"]
-            //    )
-            //);
+            services.AddTransient<IEmailSender, EmailSender>(i =>
+                new EmailSender(
+                    Configuration["EmailSender:Host"],
+                    Configuration.GetValue<int>("EmailSender:Port"),
+                    Configuration.GetValue<bool>("EmailSender:EnableSSL"),
+                    Configuration["EmailSender:UserName"],
+                    Configuration["EmailSender:Password"]
+                )
+            );
 
             services.AddMvc().SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
         }
@@ -125,6 +127,16 @@ namespace ShopApp.WebUI
                     name: "cart",
                     template: "cart",
                     defaults: new { controller = "Cart", action = "Index" }
+                    );
+                routes.MapRoute(
+                    name: "orders",
+                    template: "orders",
+                    defaults: new { controller = "Cart", action = "GetOrders" }
+                    );
+                routes.MapRoute(
+                    name: "checkout",
+                    template: "checkout",
+                    defaults: new { controller = "Cart", action = "Checkout" }
                     );
                 routes.MapRoute(
                     name: "products",

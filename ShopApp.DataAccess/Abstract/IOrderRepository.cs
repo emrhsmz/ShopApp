@@ -7,5 +7,6 @@ namespace ShopApp.DataAccess.Abstract
 {
     public interface IOrderRepository : IBaseRepository<Order>
     {
+        List<Order> GetOrders(string userId);
     }
 }

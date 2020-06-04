@@ -12,5 +12,6 @@ namespace ShopApp.Business.Abstract
 
         void AddToCart(string userId, int productId, int quantity);
         void DeleteFromCart(string userId, int productId);
+        void ClearCart(string cartId);
     }
 }
