@@ -13,7 +13,7 @@ namespace ShopApp.DataAccess.Concrete.EntityFramework
     {
         public override void Update(Cart entity)
         {
-            using(var context = new ShopContext())
+            using (var context = new ShopContext())
             {
                 context.Carts.Update(entity);
                 context.SaveChanges();
@@ -31,5 +31,15 @@ namespace ShopApp.DataAccess.Concrete.EntityFramework
                     .FirstOrDefault(i => i.UserId == userId);
             }
         }
+
+        public void DeleteFromCart(int cartId, int productId)
+        {
+            using (var context = new ShopContext())
+            {
+                var cmd = @"DELETE FROM CartItem WHERE CartID=@p0 AND ProductID =@p1";
+                context.Database.ExecuteSqlCommand(cmd, cartId, productId);
+            }
+        }
+
     }
 }

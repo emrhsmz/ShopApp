@@ -71,8 +71,7 @@ namespace ShopApp.WebUI.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
-
-            ModelState.AddModelError("", "Bilinmeyen hata oluştu lütfen tekrar deneyiniz.");
+            ModelState.AddModelError("", "Bilinmeyen hata oluştu lütfen tekrar deneyiniz.",);
             return View(model);
         }
 
