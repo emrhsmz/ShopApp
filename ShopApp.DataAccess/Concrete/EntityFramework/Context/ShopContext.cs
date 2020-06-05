@@ -10,7 +10,7 @@ namespace ShopApp.DataAccess.Concrete.EntityFramework.Context
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB;Database=ShopDb;integrated security=true;");
+            optionsBuilder.UseSqlServer(@"Server=37.230.108.247;Database=emrahse1_myLibrary;user id=emrahse1_emrah;password=080912088Es!;");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
